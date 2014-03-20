@@ -20,7 +20,7 @@ sudo mkdir -p $final_path
 sudo cp -a ../sources/* $final_path
 sudo cp ../conf/nginx.conf /etc/nginx/conf.d/$domain.d/baikal.conf
 sudo chown -R www-data:www-data $final_path
-sudo find $final_path -type d -exec chmod 755{} \;
+sudo find $final_path -type d -exec chmod 755 {} \;
 sudo touch $final_path/Specific/ENABLE_INSTALL
 sudo chmod 755 $final_path/Specific
 sudo chmod 755 $final_path/Specific/db
