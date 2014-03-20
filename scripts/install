@@ -25,7 +25,6 @@ sudo touch $final_path/Specific/ENABLE_INSTALL
 sudo chmod 755 $final_path/Specific
 sudo chmod 755 $final_path/Specific/db
 sudo chmod 755 $final_path/Specific/db/db.sqlite
-sudo chmod -R 770 $data_path
 
 # Change variables in Baikal configuration
 sudo sed -i "s@PATHTOCHANGE@$path@g" /etc/nginx/conf.d/$domain.d/baikal.conf
