@@ -1,0 +1,8 @@
+#!/bin/bash
+
+sudo rm -rf /var/www/baiakl
+sudo rm -f /etc/nginx/conf.d/$domain.d/baikal.conf
+
+
+sudo service php5-fpm restart
+sudo service nginx reload

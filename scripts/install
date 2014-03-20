@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Retrieve arguments
+domain=$1
+path=$2
+
+# Check domain/path availability
+sudo yunohost app checkurl $domain$path -a baikal
+if [[ ! $? -eq 0 ]]; then
+	exit 1
+fi
+
+# Install dependencies
+sudo apt-get install php5-sqlite php5-fpm sqlite
+
+# Copy files to the right place
+final_path=/var/www/baikal
+
+sudo mkdir -p $final_path
+sudo cp -a ../sources/* $final_path
+sudo cp ../conf/nginx.conf /etc/nginx/conf.d/$domain.d/baikal.conf
+sudo chown -R www-data:www-data $final_path
+sudo find $final_path -type d -exec chmod 755{} \;
+sudo touch $final_path/Specific/ENABLE_INSTALL
+sudo chmod 755 $final_path/Specific
+sudo chmod 755 $final_path/Specific/db
+sudo chmod 755 $final_path/Specific/db/db.sqlite
+sudo chmod -R 770 $data_path
+
+# Change variables in Baikal configuration
+sudo sed -i "s@PATHTOCHANGE@$path@g" /etc/nginx/conf.d/$domain.d/baikal.conf
+sudo sed -i "s@ALIASTOCHANGE@$final_path/@g" /etc/nginx/conf.d/$domain.d/baikal.conf
+
+sudo sed -i "s@BAIKAL_CARD_BASEURI@$path@g" $final_path/Core/Frameworks/Baikal/Model/Config/System.php
+sudo sed -i "s@BAIKAL_CAL_BASEURI@$path@g" /etc/nginx/conf.d/$domain.d/baikal.conf
+
+# Reload Nginx and regenerate SSOwat conf
+sudo service php5-fpm restart
+sudo service nginx reload
+sudo yunohost app setting baikal skipped_uris -v "/"
+sudo yunohost app ssowatconf
+
+# Unprotect URIs
+#sudo yunohost app setting owncloud skipped_uris -v "/public.php,/core,/apps/files,/index.php/apps/files"
+#sudo yunohost app setting owncloud unprotected_uris -v "/remote.php,/cron.php,/status.php"
+#sudo yunohost app ssowatconf
