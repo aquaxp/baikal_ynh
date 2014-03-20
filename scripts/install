@@ -30,8 +30,7 @@ sudo chmod 755 $final_path/Specific/db/db.sqlite
 sudo sed -i "s@PATHTOCHANGE@$path@g" /etc/nginx/conf.d/$domain.d/baikal.conf
 sudo sed -i "s@ALIASTOCHANGE@$final_path/@g" /etc/nginx/conf.d/$domain.d/baikal.conf
 
-sudo sed -i "s@BAIKAL_CARD_BASEURI@$path@g" $final_path/Core/Frameworks/Baikal/Model/Config/System.php
-sudo sed -i "s@BAIKAL_CAL_BASEURI@$path@g" /etc/nginx/conf.d/$domain.d/baikal.conf
+sudo sed -i "s@PROJECT_BASEURI_@$path@g" $final_path/Core/Frameworks/Baikal/Model/Config/System.php
 
 # Reload Nginx and regenerate SSOwat conf
 sudo service php5-fpm restart

@@ -208,10 +208,10 @@ define("BAIKAL_PATH_SABREDAV", PROJECT_PATH_FRAMEWORKS . "SabreDAV/lib/Sabre/");
 define("BAIKAL_AUTH_REALM", "BaikalDAV");
 
 # Should begin and end with a "/"
-define("BAIKAL_CARD_BASEURI", PROJECT_BASEURI . "card.php/");
+define("BAIKAL_CARD_BASEURI", PROJECT_BASEURI_ . "card.php/");
 
 # Should begin and end with a "/"
-define("BAIKAL_CAL_BASEURI", PROJECT_BASEURI . "cal.php/");
+define("BAIKAL_CAL_BASEURI", PROJECT_BASEURI_ . "cal.php/");
 
 # Define path to Baïkal Database SQLite file
 define("PROJECT_SQLITE_FILE", PROJECT_PATH_SPECIFIC . "db/db.sqlite");
