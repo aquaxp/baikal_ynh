@@ -1,3 +1,41 @@
 #!/bin/bash
 
-#nothing to do
+# Retrieve arguments
+domain=$(sudo yunohost app setting owncloud domain)
+path=$(sudo yunohost app setting owncloud path)
+
+# Remove trailing "/" for next commands
+path=${path%/}
+
+# Backuping db
+backup_path=/var/cache/yunohost/backups/baikal
+final_path=/var/www/baikal/
+
+mkdir -p $backup_path
+sudo cp -a $final_path/Specific/* $backup_path 
+
+# Copy files to the right place
+sudo mkdir -p $final_path
+sudo cp -a ../sources/* $final_path
+sudo cp ../conf/nginx.conf /etc/nginx/conf.d/$domain.d/baikal.conf
+sudo chown -R www-data:www-data $final_path
+sudo find $final_path -type d -exec chmod 755 {} \;
+sudo touch $final_path/Specific/ENABLE_INSTALL
+#sudo chmod 755 $final_path/Specific
+#sudo chmod 755 $final_path/Specific/db
+#sudo chmod 755 $final_path/Specific/db/db.sqlite
+
+# Change variables in Baikal configuration
+sudo sed -i "s@PATHTOCHANGE@$path@g" /etc/nginx/conf.d/$domain.d/baikal.conf
+sudo sed -i "s@ALIASTOCHANGE@$final_path/@g" /etc/nginx/conf.d/$domain.d/baikal.conf
+
+sudo sed -i "s@PROJECT_BASEURI_@\"$path/\"@g" $final_path/Core/Frameworks/Baikal/Model/Config/System.php
+
+# Restoring backup
+sudo cp -a $backup_path/* $final_path/Specific
+
+# Reload Nginx and regenerate SSOwat conf
+sudo service php5-fpm restart
+sudo service nginx reload
+sudo yunohost app setting baikal skipped_uris -v "/"
+sudo yunohost app ssowatconf

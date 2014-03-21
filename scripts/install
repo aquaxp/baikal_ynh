@@ -30,6 +30,7 @@ sudo chmod 755 $final_path/Specific/db/db.sqlite
 sudo sed -i "s@PATHTOCHANGE@$path@g" /etc/nginx/conf.d/$domain.d/baikal.conf
 sudo sed -i "s@ALIASTOCHANGE@$final_path/@g" /etc/nginx/conf.d/$domain.d/baikal.conf
 
+# Change variables in Baikal sources for correct work in subpathes
 sudo sed -i "s@PROJECT_BASEURI_@\"$path/\"@g" $final_path/Core/Frameworks/Baikal/Model/Config/System.php
 
 # Reload Nginx and regenerate SSOwat conf
@@ -37,8 +38,3 @@ sudo service php5-fpm restart
 sudo service nginx reload
 sudo yunohost app setting baikal skipped_uris -v "/"
 sudo yunohost app ssowatconf
-
-# Unprotect URIs
-#sudo yunohost app setting owncloud skipped_uris -v "/public.php,/core,/apps/files,/index.php/apps/files"
-#sudo yunohost app setting owncloud unprotected_uris -v "/remote.php,/cron.php,/status.php"
-#sudo yunohost app ssowatconf

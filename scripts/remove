@@ -1,8 +1,16 @@
 #!/bin/bash
 
+# Backuping db
+backup_path=/var/cache/yunohost/backups/baikal
+final_path=/var/www/baikal/
+
+mkdir -p $backup_path
+sudo cp -a $final_path/Specific/* $backup_path 
+
+# Removing executable files
 sudo rm -rf /var/www/baiakl
 sudo rm -f /etc/nginx/conf.d/$domain.d/baikal.conf
 
-
+# Restarting services
 sudo service php5-fpm restart
 sudo service nginx reload
