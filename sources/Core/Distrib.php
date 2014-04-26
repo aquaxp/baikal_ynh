@@ -26,4 +26,4 @@
 
 define("BAIKAL_VERSION", "0.2.7");
 define("BAIKAL_HOMEPAGE", "http://baikal-server.com");
-define("PROJECT_PACKAGE", "flat");
+define("PROJECT_PACKAGE", "regular");
