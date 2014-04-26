@@ -11,6 +11,10 @@ if [[ ! $? -eq 0 ]]; then
 	exit 1
 fi
 
+# Install PHP dependency
+sudo apt-get update
+sudo apt-get install -y php5-cli
+
 # Copy files to the right place
 final_path=/var/www/baikal
 
