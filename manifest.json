@@ -3,7 +3,7 @@
     "id": "baikal",
     "description": {
         "en": "Lightweight CalDAV+CardDAV server",
-        "fr": "CalDAV+CardDAV server"
+        "fr": "Serveur CalDAV+CardDAV léger"
     },
     "developer": {
         "name": "aquaxp",
@@ -27,6 +27,13 @@
                 },
                 "example": "/baikal",
                 "default": "/baikal"
+            },
+            {
+                "name": "admin_pwd",
+                "ask": {
+                    "en": "Choose a password for baikal admin"
+                },
+                "example": "mysecret"
             }
         ]
     }
