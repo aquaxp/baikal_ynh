@@ -3,7 +3,7 @@
 # Retrieve arguments
 domain=$1
 path=$2
-admin_pwd=$3
+password=$3
 
 # Check domain/path availability
 sudo yunohost app checkurl $domain$path -a baikal
@@ -30,7 +30,7 @@ db_user=baikal
 sudo yunohost app initdb $db_user -p $db_pwd -s $(readlink -e ../sources/Core/Resources/Db/MySQL/db.sql)
 sudo yunohost app setting baikal mysqlpwd -v $db_pwd
 sed -i "s@YNH_TIMEZONE@$(cat /etc/timezone)@g" ../conf/config.php
-sed -i "s@YNH_ADMIN_PASSWORDHASH@$(echo -n admin:BaikalDAV:$admin_pwd | md5sum | cut -d ' ' -f 1)@g" ../conf/config.php
+sed -i "s@YNH_ADMIN_PASSWORDHASH@$(echo -n admin:BaikalDAV:$password | md5sum | cut -d ' ' -f 1)@g" ../conf/config.php
 
 sed -i "s@YNH_LOCATION@$path@g" ../conf/config.system.php
 sed -i "s@YNH_DBNAME@$db_user@g" ../conf/config.system.php

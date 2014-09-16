@@ -29,7 +29,7 @@
                 "default": "/baikal"
             },
             {
-                "name": "admin_pwd",
+                "name": "password",
                 "ask": {
                     "en": "Choose a password for baikal admin"
                 },
