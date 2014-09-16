@@ -31,7 +31,7 @@ sudo yunohost app initdb $db_user -p $db_pwd -s $(readlink -e ../sources/Core/Re
 sudo yunohost app setting baikal mysqlpwd -v $db_pwd
 sed -i "s@YNH_TIMEZONE@$(cat /etc/timezone)@g" ../conf/config.php
 sed -i "s@YNH_ADMIN_PASSWORDHASH@$(echo -n admin:BaikalDAV:$password | md5sum | cut -d ' ' -f 1)@g" ../conf/config.php
-sudo yunohost app setting baikal password $password
+sudo yunohost app setting baikal password -v $password
 
 sed -i "s@YNH_LOCATION@$path@g" ../conf/config.system.php
 sed -i "s@YNH_DBNAME@$db_user@g" ../conf/config.system.php
