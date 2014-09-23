@@ -5,9 +5,10 @@
         "en": "Lightweight CalDAV+CardDAV server",
         "fr": "Serveur CalDAV+CardDAV léger"
     },
+    "licence": "GNU GPL-3",
     "developer": {
-        "name": "aquaxp",
-        "email": "n@a.ru",
+        "name": "julien",
+        "email": "julien.malik@paraiso.me",
         "url": "https://github.com/aquaxp"
     },
     "multi_instance": "true",
