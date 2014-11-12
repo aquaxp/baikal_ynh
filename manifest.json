@@ -5,7 +5,6 @@
         "en": "Lightweight CalDAV+CardDAV server",
         "fr": "Serveur CalDAV+CardDAV léger"
     },
-    "licence": "GNU GPL-3",
     "developer": {
         "name": "julien",
         "email": "julien.malik@paraiso.me",
