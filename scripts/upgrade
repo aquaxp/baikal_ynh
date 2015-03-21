@@ -1,41 +1,90 @@
 #!/bin/bash
 
 # Retrieve arguments
-domain=$(sudo yunohost app setting owncloud domain)
-path=$(sudo yunohost app setting owncloud path)
+domain=$(sudo yunohost app setting baikal domain)
+path=$(sudo yunohost app setting baikal path)
+password=$(sudo yunohost app setting baikal password)
 
 # Remove trailing "/" for next commands
 path=${path%/}
 
-# Backuping db
-backup_path=/var/cache/yunohost/backups/baikal
-final_path=/var/www/baikal/
-
-mkdir -p $backup_path
-sudo cp -a $final_path/Specific/* $backup_path 
 
 # Copy files to the right place
+final_path=/var/www/baikal
+
+# let's not use a bash variable for this one...
+sudo rm -rf /var/www/baikal
+
 sudo mkdir -p $final_path
 sudo cp -a ../sources/* $final_path
-sudo cp ../conf/nginx.conf /etc/nginx/conf.d/$domain.d/baikal.conf
-sudo chown -R www-data:www-data $final_path
-sudo find $final_path -type d -exec chmod 755 {} \;
-sudo touch $final_path/Specific/ENABLE_INSTALL
-#sudo chmod 755 $final_path/Specific
-#sudo chmod 755 $final_path/Specific/db
-#sudo chmod 755 $final_path/Specific/db/db.sqlite
+sudo chown -R www-data: $final_path
+sudo su -c "curl -sS https://getcomposer.org/installer | php -- --install-dir=$final_path" www-data
+sudo su -c "cd $final_path && php composer.phar install" www-data
+sudo rm $final_path/composer*
+
+db_pwd=$(sudo yunohost app setting baikal mysqlpwd)
+db_user=baikal
+sed -i "s@YNH_TIMEZONE@$(cat /etc/timezone)@g" ../conf/config.php
+sed -i "s@YNH_ADMIN_PASSWORDHASH@$(echo -n admin:BaikalDAV:$password | md5sum | cut -d ' ' -f 1)@g" ../conf/config.php
+
+sed -i "s@YNH_LOCATION@$path@g" ../conf/config.system.php
+sed -i "s@YNH_DBNAME@$db_user@g" ../conf/config.system.php
+sed -i "s@YNH_DBUSER@$db_user@g" ../conf/config.system.php
+sed -i "s@YNH_DBPWD@$db_pwd@g" ../conf/config.system.php
+encrypt_key=$(sudo yunohost app setting baikal encrypt_key)
+sed -i "s@YNH_ENCRYPTKEY@$encrypt_key@g" ../conf/config.system.php
+
+sudo cp ../conf/config.php $final_path/Specific
+sudo cp ../conf/config.system.php $final_path/Specific
+
+sudo chown -R root: $final_path
+sudo chown -R www-data: $final_path/Specific
+sudo find $final_path -type f | xargs sudo chmod 644
+sudo find $final_path -type d | xargs sudo chmod 755
 
 # Change variables in Baikal configuration
-sudo sed -i "s@PATHTOCHANGE@$path@g" /etc/nginx/conf.d/$domain.d/baikal.conf
-sudo sed -i "s@ALIASTOCHANGE@$final_path/@g" /etc/nginx/conf.d/$domain.d/baikal.conf
-
-sudo sed -i "s@PROJECT_BASEURI_@\"$path/\"@g" $final_path/Core/Frameworks/Baikal/Model/Config/System.php
-
-# Restoring backup
-sudo cp -a $backup_path/* $final_path/Specific
+sed -i "s@PATHTOCHANGE@$path@g" ../conf/nginx.conf
+sed -i "s@ALIASTOCHANGE@$final_path/html@g" ../conf/nginx.conf
+sudo cp ../conf/nginx.conf /etc/nginx/conf.d/$domain.d/baikal.conf
+sudo chown root: /etc/nginx/conf.d/$domain.d/baikal.conf
+sudo chmod 600 /etc/nginx/conf.d/$domain.d/baikal.conf
 
 # Reload Nginx and regenerate SSOwat conf
-sudo service php5-fpm restart
 sudo service nginx reload
 sudo yunohost app setting baikal skipped_uris -v "/"
 sudo yunohost app ssowatconf
+
+
+# 
+# # Backuping db
+# backup_path=/var/cache/yunohost/backups/baikal
+# final_path=/var/www/baikal/
+# 
+# mkdir -p $backup_path
+# sudo cp -a $final_path/Specific/* $backup_path 
+# 
+# # Copy files to the right place
+# sudo mkdir -p $final_path
+# sudo cp -a ../sources/* $final_path
+# sudo cp ../conf/nginx.conf /etc/nginx/conf.d/$domain.d/baikal.conf
+# sudo chown -R www-data:www-data $final_path
+# sudo find $final_path -type d -exec chmod 755 {} \;
+# sudo touch $final_path/Specific/ENABLE_INSTALL
+# #sudo chmod 755 $final_path/Specific
+# #sudo chmod 755 $final_path/Specific/db
+# #sudo chmod 755 $final_path/Specific/db/db.sqlite
+# 
+# # Change variables in Baikal configuration
+# sudo sed -i "s@PATHTOCHANGE@$path@g" /etc/nginx/conf.d/$domain.d/baikal.conf
+# sudo sed -i "s@ALIASTOCHANGE@$final_path/@g" /etc/nginx/conf.d/$domain.d/baikal.conf
+# 
+# sudo sed -i "s@PROJECT_BASEURI_@\"$path/\"@g" $final_path/Core/Frameworks/Baikal/Model/Config/System.php
+# 
+# # Restoring backup
+# sudo cp -a $backup_path/* $final_path/Specific
+# 
+# # Reload Nginx and regenerate SSOwat conf
+# sudo service php5-fpm restart
+# sudo service nginx reload
+# sudo yunohost app setting baikal skipped_uris -v "/"
+# sudo yunohost app ssowatconf

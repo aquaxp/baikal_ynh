@@ -5,16 +5,17 @@
         "en": "Lightweight CalDAV+CardDAV server",
         "fr": "Serveur CalDAV+CardDAV léger"
     },
-    "developer": {
-        "name": "aquaxp",
-        "email": "n@a.ru",
-        "url": "https://github.com/aquaxp"
+    "url": "http://baikal-server.com/",
+    "maintainer": {
+        "name": "julien",
+        "email": "julien.malik@paraiso.me"
     },
     "multi_instance": "true",
     "arguments": {
         "install" : [
             {
                 "name": "domain",
+                "type": "domain",
                 "ask": {
                     "en": "Choose a domain for baikal"
                 },
@@ -22,6 +23,7 @@
             },
             {
                 "name": "path",
+                "type": "path",
                 "ask": {
                     "en": "Choose a path for baikal"
                 },
@@ -29,7 +31,8 @@
                 "default": "/baikal"
             },
             {
-                "name": "admin_pwd",
+                "name": "password",
+                "type": "password",
                 "ask": {
                     "en": "Choose a password for baikal admin"
                 },
