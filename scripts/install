@@ -60,3 +60,6 @@ sudo chmod 600 /etc/nginx/conf.d/$domain.d/baikal.conf
 sudo service nginx reload
 sudo yunohost app setting baikal skipped_uris -v "/"
 sudo yunohost app ssowatconf
+
+# Remove ENABLE_INSTALL for more Security
+sudo rm $final_path/Specific/ENABLE_INSTALL
