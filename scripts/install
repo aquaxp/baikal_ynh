@@ -21,8 +21,8 @@ final_path=/var/www/baikal
 sudo mkdir -p $final_path
 sudo cp -a ../sources/* $final_path
 sudo chown -R www-data: $final_path
-sudo su -c "curl -sS https://getcomposer.org/installer | php -- --install-dir=$final_path" www-data
-sudo su -c "cd $final_path && php composer.phar install" www-data
+sudo su -c "curl -sS https://getcomposer.org/installer | php -- --install-dir=$final_path" -s /bin/sh www-data
+sudo su -c "cd $final_path && php composer.phar install" -s /bin/sh www-data
 sudo rm $final_path/composer*
 
 db_pwd=$(dd if=/dev/urandom bs=1 count=200 2> /dev/null | tr -c -d '[A-Za-z0-9]' | sed -n 's/\(.\{24\}\).*/\1/p')
