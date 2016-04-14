@@ -1,20 +1,27 @@
 {
     "name": "Baikal",
     "id": "baikal",
+    "packaging_format": 1,
     "description": {
         "en": "Lightweight CalDAV+CardDAV server",
         "fr": "Serveur CalDAV+CardDAV léger"
     },
-    "developer": {
+    "url": "http://baikal-server.com/",
+    "maintainer": {
         "name": "julien",
-        "email": "julien.malik@paraiso.me",
-        "url": "https://github.com/julienmalik"
+        "email": "julien.malik@paraiso.me"
     },
     "multi_instance": "true",
+    "services": [
+        "nginx",
+        "php5-fpm",
+        "mysql"
+    ],
     "arguments": {
         "install" : [
             {
                 "name": "domain",
+                "type": "domain",
                 "ask": {
                     "en": "Choose a domain for baikal"
                 },
@@ -22,6 +29,7 @@
             },
             {
                 "name": "path",
+                "type": "path",
                 "ask": {
                     "en": "Choose a path for baikal"
                 },
@@ -30,6 +38,7 @@
             },
             {
                 "name": "password",
+                "type": "password",
                 "ask": {
                     "en": "Choose a password for baikal admin"
                 },
