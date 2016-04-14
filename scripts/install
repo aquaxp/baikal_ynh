@@ -56,6 +56,9 @@ sudo cp ../conf/nginx.conf /etc/nginx/conf.d/$domain.d/baikal.conf
 sudo chown root: /etc/nginx/conf.d/$domain.d/baikal.conf
 sudo chmod 600 /etc/nginx/conf.d/$domain.d/baikal.conf
 
+# Configure redirect for well-known URLs
+sudo yunohost app setting baikal redirected_urls -v "{\"/.well-known/caldav\": \"$path/cal.php\",\"/.well-known/carddav\": \"$path/card.php\"}"
+
 # Reload Nginx and regenerate SSOwat conf
 sudo service nginx reload
 sudo yunohost app setting baikal skipped_uris -v "/"
