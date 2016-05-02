@@ -3,7 +3,7 @@
 #
 #	Copyright notice
 #
-#	(c) 2014 Jérôme Schneider <mail@jeromeschneider.fr>
+#	(c) 2016 Jérôme Schneider <mail@jeromeschneider.fr>
 #	All rights reserved
 #
 #	http://baikal-server.com
@@ -35,17 +35,17 @@
 #	1. All URIs *must* be suffixed by "/" if pointing to a folder
 #
 
-# PATH to SabreDAV
-define("BAIKAL_PATH_SABREDAV", PROJECT_PATH_FRAMEWORKS . "SabreDAV/lib/Sabre/");
-
 # If you change this value, you'll have to re-generate passwords for all your users
 define("BAIKAL_AUTH_REALM", 'BaikalDAV');
 
 # Should begin and end with a "/"
-define("BAIKAL_CARD_BASEURI", "YNH_LOCATION/card.php/");
+define("BAIKAL_CARD_BASEURI", "#PATH#/card.php/");
 
 # Should begin and end with a "/"
-define("BAIKAL_CAL_BASEURI", "YNH_LOCATION/cal.php/");
+define("BAIKAL_CAL_BASEURI", "#PATH#/cal.php/");
+
+# Should begin and end with a "/"
+define("BAIKAL_DAV_BASEURI", "#PATH#/dav.php/");
 
 # Define path to Baïkal Database SQLite file
 define("PROJECT_SQLITE_FILE", PROJECT_PATH_SPECIFIC . "db/db.sqlite");
@@ -57,16 +57,16 @@ define("PROJECT_DB_MYSQL", TRUE);
 define("PROJECT_DB_MYSQL_HOST", 'localhost');
 
 # MySQL > Database name
-define("PROJECT_DB_MYSQL_DBNAME", 'YNH_DBNAME');
+define("PROJECT_DB_MYSQL_DBNAME", '#DBNAME#');
 
 # MySQL > Username
-define("PROJECT_DB_MYSQL_USERNAME", 'YNH_DBUSER');
+define("PROJECT_DB_MYSQL_USERNAME", '#DBUSER#');
 
 # MySQL > Password
-define("PROJECT_DB_MYSQL_PASSWORD", 'YNH_DBPWD');
+define("PROJECT_DB_MYSQL_PASSWORD", '#DBPASS#');
 
 # A random 32 bytes key that will be used to encrypt data
-define("BAIKAL_ENCRYPTION_KEY", 'YNH_ENCRYPTKEY');
+define("BAIKAL_ENCRYPTION_KEY", '#DESKEY#');
 
 # The currently configured Baïkal version
-define("BAIKAL_CONFIGURED_VERSION", '0.2.7');
+define("BAIKAL_CONFIGURED_VERSION", '0.4.4');
