@@ -25,9 +25,9 @@ or from the Web administration:
 
 ## TODO
 
- * Update the `upgrade` script and test the upgrade from the current
-   official package
+ * Test the upgrade from the current official package
  * Add `backup` and `remove` scripts
+ * Update `config.php` and `config.system.php` at upgrade
 
 ## Links ##
 
