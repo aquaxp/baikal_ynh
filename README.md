@@ -4,7 +4,7 @@ Baïkal for YunoHost
 *This is a work-in-progress package review to update Baikal to 0.4.x
 and make use of new YunoHost facilities - e.g. helpers - coming with 2.3.x.*
 
-[Baikal](http://baikal-server.com/) is a Cal and CardDAV server, based on
+[Baïkal](http://baikal-server.com/) is a Cal and CardDAV server, based on
 sabre/dav, that includes an administrative interface for easy management.
 
 **Shipped version:** 0.4.4
@@ -26,11 +26,11 @@ or from the Web administration:
 ## TODO
 
  * Test the upgrade from the current official package
- * Add `backup` and `remove` scripts
  * Update `config.php` and `config.system.php` at upgrade
+ * Add a PHP-FPM pool for Baïkal?
 
 ## Links ##
 
-**Baikal**: http://baikal-server.com/
+**Baïkal**: http://baikal-server.com/
 
 **YunoHost**: https://yunohost.org/
