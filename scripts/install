@@ -21,7 +21,7 @@ sudo yunohost app checkurl "${domain}${path}" -a "$app" \
 
 # Check destination directory
 DESTDIR="/var/www/${app}"
-[[ -d "$DESTDIR" ]] && die \
+[[ -d "$DESTDIR" ]] && ynh_die \
 "The destination directory '${DESTDIR}' already exists.\
  You should safely delete it before installing this app."
 
