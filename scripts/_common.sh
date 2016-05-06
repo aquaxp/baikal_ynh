@@ -27,8 +27,7 @@ extract_baikal() {
   local DESTDIR=$1
   local bk_archive="${DESTDIR}/baikal.zip"
 
-#  wget -q -O "$bk_archive" "$BAIKAL_SOURCE_URL" \
-  cp /home/admin/baikal.zip "$bk_archive" \
+  wget -q -O "$bk_archive" "$BAIKAL_SOURCE_URL" \
     || ynh_die "Unable to download Baikal archive"
   echo "$BAIKAL_SOURCE_SHA256 $bk_archive" | sha256sum -c >/dev/null \
     || ynh_die "Invalid checksum of downloaded archive"
