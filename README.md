@@ -25,9 +25,7 @@ or from the Web administration:
 
 ## TODO
 
- * Test the upgrade from the current official package
  * Update `config.php` and `config.system.php` at upgrade
- * Add a PHP-FPM pool for Baïkal?
 
 ## Links ##
 

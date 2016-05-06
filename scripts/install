@@ -69,14 +69,6 @@ sed -i "s@#LOCATION#@${path:-/}@g" ../conf/nginx.conf
 sed -i "s@#DESTDIR#@${DESTDIR}@g"  ../conf/nginx.conf
 sudo cp ../conf/nginx.conf "$nginx_conf"
 
-# Copy and set php-fpm configuration
-#phpfpm_conf="/etc/php5/fpm/pool.d/${app}.conf"
-#sed -i "s@#POOLNAME#@${app}@g"     ../conf/php-fpm.conf
-#sed -i "s@#DESTDIR#@${DESTDIR}/@g" ../conf/php-fpm.conf
-#sudo cp ../conf/php-fpm.conf "$phpfpm_conf"
-#sudo chown root: $phpfpm_conf
-#sudo chmod 644 $phpfpm_conf
-
 # Save app settings
 ynh_app_setting_set "$app" password "$password"
 ynh_app_setting_set "$app" encrypt_key "$deskey"
@@ -87,5 +79,4 @@ ynh_app_setting_set "$app" skipped_uris "/"
 ynh_app_setting_set "$app" protected_uris "/admin/"
 
 # Reload services
-#sudo service php5-fpm restart || true
 sudo service nginx reload || true
