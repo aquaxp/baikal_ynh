@@ -1,12 +1,14 @@
 {
-    "name": "Baikal",
-    "id": "baikal",
     "packaging_format": 1,
+    "id": "baikal",
+    "name": "Baikal",
     "description": {
         "en": "Lightweight CalDAV+CardDAV server",
         "fr": "Serveur CalDAV+CardDAV léger"
     },
     "url": "http://baikal-server.com/",
+    "license": "GPL-3",
+    "version": "0.4.4",
     "maintainer": {
         "name": "julien",
         "email": "julien.malik@paraiso.me"
