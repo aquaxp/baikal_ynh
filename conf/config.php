@@ -3,7 +3,7 @@
 #
 #	Copyright notice
 #
-#	(c) 2014 Jérôme Schneider <mail@jeromeschneider.fr>
+#	(c) 2016 Jérôme Schneider <mail@jeromeschneider.fr>
 #	All rights reserved
 #
 #	http://baikal-server.com
@@ -32,7 +32,7 @@
 #
 
 # Timezone of your users, if unsure, check http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-define("PROJECT_TIMEZONE", 'YNH_TIMEZONE');
+define("PROJECT_TIMEZONE", '#TIMEZONE#');
 
 # CardDAV ON/OFF switch; default TRUE
 define("BAIKAL_CARD_ENABLED", TRUE);
@@ -48,8 +48,8 @@ define("BAIKAL_DAV_LDAP_URI", 'ldap://127.0.0.1/');
 
 # Auth Backend LDAP-UserBind; Template for userbind
 # %n => username
-# %u => user part of username when it is an email 
-# %u => domain part of username when it is an email 
+# %u => user part of username when it is an email
+# %u => domain part of username when it is an email
 define("BAIKAL_DAV_LDAP_DN_TEMPLATE", 'uid=%n,ou=users,dc=yunohost,dc=org');
 
 # Auth Backend LDAP-UserBind; attribute for displayname
@@ -58,23 +58,5 @@ define("BAIKAL_DAV_LDAP_DISPLAYNAME_ATTR", 'cn');
 # Auth Backend LDAP-UserBind; attribute for email
 define("BAIKAL_DAV_LDAP_EMAIL_ATTR", 'mail');
 
-# Auth Backend Mail; protocol of service
-define("BAIKAL_DAV_MAIL_PROTOCOL", 'imap');
-
-# Auth Backend Mail; server host:port
-define("BAIKAL_DAV_MAIL_SERVER", 'localhost:143');
-
-# Auth Backend Mail; validate the ssl-certificate
-define("BAIKAL_DAV_MAIL_CHECK_CERT", TRUE);
-
-# Auth Backends: automatic creation of users; default yes"
-define("BAIKAL_DAV_AUTO_CREATE_USER", TRUE);
-
-# Baïkal Web Admin ON/OFF switch; default TRUE
-define("BAIKAL_ADMIN_ENABLED", TRUE);
-
-# Baïkal Web Admin autolock ON/OFF switch; default FALSE
-define("BAIKAL_ADMIN_AUTOLOCKENABLED", FALSE);
-
 # Baïkal Web admin password hash; Set via Baïkal Web Admin
-define("BAIKAL_ADMIN_PASSWORDHASH", 'YNH_ADMIN_PASSWORDHASH');
+define("BAIKAL_ADMIN_PASSWORDHASH", '#PASSWORDHASH#');

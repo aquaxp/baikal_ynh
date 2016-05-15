@@ -1,65 +1,82 @@
 #!/bin/bash
 
+set -e
+
 # Retrieve arguments
 domain=$1
-path=$2
+path=${2%/}
 password=$3
+app=${!#}
+
+# Load common variables and helpers
+source ./_common.sh
+
+# Set app specific variables
+dbname=$app
+dbuser=$app
 
 # Check domain/path availability
-sudo yunohost app checkurl $domain$path -a baikal
-if [[ ! $? -eq 0 ]]; then
-	exit 1
-fi
+sudo yunohost app checkurl "${domain}${path}" -a "$app" \
+  || exit 1
 
-# Install PHP dependency
-sudo apt-get update
-sudo apt-get install -y php5-cli
+# Check destination directory
+DESTDIR="/var/www/${app}"
+[[ -d "$DESTDIR" ]] && ynh_die \
+"The destination directory '${DESTDIR}' already exists.\
+ You should safely delete it before installing this app."
 
-# Copy files to the right place
-final_path=/var/www/baikal
+# Create tmp directory and fetch app inside
+TMPDIR=$(ynh_mkdir_tmp)
+extract_baikal "$TMPDIR"
 
-sudo mkdir -p $final_path
-sudo cp -a ../sources/* $final_path
-sudo chown -R www-data: $final_path
-sudo su -c "curl -sS https://getcomposer.org/installer | php -- --install-dir=$final_path" www-data
-sudo su -c "cd $final_path && php composer.phar install" www-data
-sudo rm $final_path/composer*
+# Generate random DES key & password
+deskey=$(ynh_string_random 24)
+dbpass=$(ynh_string_random)
 
-db_pwd=$(dd if=/dev/urandom bs=1 count=200 2> /dev/null | tr -c -d '[A-Za-z0-9]' | sed -n 's/\(.\{24\}\).*/\1/p')
-db_user=baikal
-sudo yunohost app initdb $db_user -p $db_pwd -s $(readlink -e ../sources/Core/Resources/Db/MySQL/db.sql)
-sudo yunohost app setting baikal mysqlpwd -v $db_pwd
-sed -i "s@YNH_TIMEZONE@$(cat /etc/timezone)@g" ../conf/config.php
-sed -i "s@YNH_ADMIN_PASSWORDHASH@$(echo -n admin:BaikalDAV:$password | md5sum | cut -d ' ' -f 1)@g" ../conf/config.php
-sudo yunohost app setting baikal password -v $password
+# Initialize database
+ynh_mysql_create_db "$dbname" "$dbuser" "$dbpass"
+ynh_mysql_connect_as "$dbuser" "$dbpass" "$dbname" \
+    < "${TMPDIR}/Core/Resources/Db/MySQL/db.sql"
 
-sed -i "s@YNH_LOCATION@$path@g" ../conf/config.system.php
-sed -i "s@YNH_DBNAME@$db_user@g" ../conf/config.system.php
-sed -i "s@YNH_DBUSER@$db_user@g" ../conf/config.system.php
-sed -i "s@YNH_DBPWD@$db_pwd@g" ../conf/config.system.php
-encrypt_key=$(dd if=/dev/urandom bs=1 count=200 2> /dev/null | tr -c -d 'A-Za-z0-9' | sed -n 's/\(.\{32\}\).*/\1/p')
-sudo yunohost app setting baikal encrypt_key -v $encrypt_key
-sed -i "s@YNH_ENCRYPTKEY@$encrypt_key@g" ../conf/config.system.php
+# Create admin password hash
+password_hash=$(echo -n admin:BaikalDAV:$password | md5sum | cut -d ' ' -f 1)
 
-sudo cp ../conf/config.php $final_path/Specific
-sudo cp ../conf/config.system.php $final_path/Specific
+# Copy and set Baikal configuration
+bk_conf="${TMPDIR}/Specific/config.php"
+cp ../conf/config.php "$bk_conf"
+sed -i "s@#TIMEZONE#@$(cat /etc/timezone)@g" "$bk_conf"
+sed -i "s@#PASSWORDHASH#@${password_hash}@g" "$bk_conf"
 
-sudo chown -R root: $final_path
-sudo chown -R www-data: $final_path/Specific
-sudo find $final_path -type f | xargs sudo chmod 644
-sudo find $final_path -type d | xargs sudo chmod 755
+bk_conf="${TMPDIR}/Specific/config.system.php"
+cp ../conf/config.system.php "$bk_conf"
+sed -i "s@#PATH#@${path}@g"     "$bk_conf"
+sed -i "s@#DBNAME#@${dbname}@g" "$bk_conf"
+sed -i "s@#DBUSER#@${dbuser}@g" "$bk_conf"
+sed -i "s@#DBPASS#@${dbpass}@g" "$bk_conf"
+sed -i "s@#DESKEY#@${deskey}@g" "$bk_conf"
 
-# Change variables in Baikal configuration
-sed -i "s@PATHTOCHANGE@$path@g" ../conf/nginx.conf
-sed -i "s@ALIASTOCHANGE@$final_path/html@g" ../conf/nginx.conf
-sudo cp ../conf/nginx.conf /etc/nginx/conf.d/$domain.d/baikal.conf
-sudo chown root: /etc/nginx/conf.d/$domain.d/baikal.conf
-sudo chmod 600 /etc/nginx/conf.d/$domain.d/baikal.conf
+# Disable installation
+touch "${TMPDIR}/Specific/INSTALL_DISABLED"
 
-# Reload Nginx and regenerate SSOwat conf
-sudo service nginx reload
-sudo yunohost app setting baikal skipped_uris -v "/"
-sudo yunohost app ssowatconf
+# Install files and set permissions
+sudo mv "$TMPDIR" "$DESTDIR"
+sudo chown -R www-data: "$DESTDIR"
 
-# Remove ENABLE_INSTALL for more Security
-sudo rm $final_path/Specific/ENABLE_INSTALL
+# Copy and set nginx configuration
+nginx_conf="/etc/nginx/conf.d/${domain}.d/${app}.conf"
+sed -i "s@#PATH#@${path}@g"        ../conf/nginx.conf
+sed -i "s@#LOCATION#@${path:-/}@g" ../conf/nginx.conf
+sed -i "s@#DESTDIR#@${DESTDIR}@g"  ../conf/nginx.conf
+sudo cp ../conf/nginx.conf "$nginx_conf"
+
+# Save app settings
+ynh_app_setting_set "$app" password "$password"
+ynh_app_setting_set "$app" encrypt_key "$deskey"
+ynh_app_setting_set "$app" mysqlpwd "$dbpass"
+
+# Set SSOwat rules
+ynh_app_setting_set "$app" skipped_uris "/"
+ynh_app_setting_set "$app" protected_uris "/admin/"
+
+# Reload services
+sudo service nginx reload || true

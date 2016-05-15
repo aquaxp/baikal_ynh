@@ -1,23 +1,35 @@
 {
-    "name": "Baikal",
+    "packaging_format": 1,
     "id": "baikal",
+    "name": "Baikal",
     "description": {
         "en": "Lightweight CalDAV+CardDAV server",
         "fr": "Serveur CalDAV+CardDAV léger"
     },
     "url": "http://baikal-server.com/",
+    "license": "GPL-3",
+    "version": "0.4.4",
     "maintainer": {
         "name": "julien",
         "email": "julien.malik@paraiso.me"
     },
-    "multi_instance": "true",
+    "multi_instance": false,
+    "requirements": {
+        "yunohost": ">= 2.3.16"
+    },
+    "services": [
+        "nginx",
+        "php5-fpm",
+        "mysql"
+    ],
     "arguments": {
         "install" : [
             {
                 "name": "domain",
                 "type": "domain",
                 "ask": {
-                    "en": "Choose a domain for baikal"
+                    "en": "Choose a domain for Baïkal",
+                    "fr": "Choisissez un domaine pour Baïkal"
                 },
                 "example": "domain.org"
             },
@@ -25,7 +37,8 @@
                 "name": "path",
                 "type": "path",
                 "ask": {
-                    "en": "Choose a path for baikal"
+                    "en": "Choose a path for Baïkal",
+                    "fr": "Choisissez un chemin pour Baïkal"
                 },
                 "example": "/baikal",
                 "default": "/baikal"
@@ -34,7 +47,8 @@
                 "name": "password",
                 "type": "password",
                 "ask": {
-                    "en": "Choose a password for baikal admin"
+                    "en": "Set the password for the administration",
+                    "fr": "Définissez le mot de passe pour l'administration"
                 },
                 "example": "mysecret"
             }
